@@ -69,6 +69,10 @@ def verify(verification: CreateVerification, session:Session = Depends(get_db)):
 
 # -------------- theter screen --------------------
 
+@router.get("/screen")
+def allScreens(session:Session = Depends(get_db)):
+    return getAllScreen(session)
+
 @router.post("/screen")
 def createScreen(screen: CreateScreen, session:Session = Depends(get_db)):
     return addScreen(session, screen)
@@ -87,3 +91,29 @@ def delScreen(screenid:int, session:Session = Depends(get_db)):
 @router.post("/seat")
 def createSeat(seat: CreateSeat, session:Session = Depends(get_db)):
     return addSeats(session, seat)
+
+
+# ---------------------- Movies  -------------------------
+
+@router.get("/movies")
+def movies(session:Session = Depends(get_db)):
+    return getAllMoview(session)
+
+@router.post("/movies")
+def createMovie(movie:CreateMovies, session:Session = Depends(get_db)):
+    return addMovies(session, movie)
+
+
+# ---------------------- Show ------------------------
+
+@router.get("/show")
+def allShows(session:Session = Depends(get_db)):
+    return getAllShows(session)
+
+@router.get("/thetershow")
+def theter_show(tid:int,session:Session = Depends(get_db)):    
+    return getTheterShows(session, tid)
+
+@router.post("/show")
+def createshow(show:CreateShows, session:Session = Depends(get_db)):
+    return addShow(session, show)

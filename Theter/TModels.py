@@ -19,7 +19,7 @@ class ThetersInfo(Base):
 
     docs = relationship("TheterDocsInfo",uselist=True, back_populates="theter")
     verification = relationship("TheterVerificationInfo", uselist=True, back_populates="theter")
-    screens = relationship("TheterScreenInfo", uselist=True, back_populates="theter")
+    screens = relationship("TheterScreenInfo",  uselist=True, back_populates="theter")
 
 # theter documents model
 class TheterDocsInfo(Base):
@@ -55,16 +55,50 @@ class TheterScreenInfo(Base):
     tid = Column(Integer, ForeignKey("theter.id"))
     theter = relationship("ThetersInfo", back_populates="screens")
     seats = relationship("SeatsInfo", uselist=True ,back_populates="screen")
+    show = relationship("ShowsInfo", uselist=True ,back_populates="screens")
 
 # screen seats
 class SeatsInfo(Base):
     __tablename__ = 'seats'
 
     id = Column(Integer, primary_key=True, index=True)
-    tid = Column(Integer, ForeignKey("theter.id"))
+    tid = Column(Integer)
     seat_name = Column(String)
     seat_price = Column(Integer)
-    screenid = Column(Integer, ForeignKey("screens.id"))
     seat_status = Column(Boolean)
+    screenid = Column(Integer, ForeignKey("screens.id"))
+
 
     screen = relationship("TheterScreenInfo", back_populates="seats")
+
+# movie model
+class MovieInfo(Base):
+    __tablename__ = 'movies'
+
+    id = Column(Integer, primary_key=True, index=True)
+    mov_name = Column(String)
+    language = Column(String)
+    mov_type = Column(String)
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    m_show = relationship("ShowsInfo", back_populates="movie")
+
+# current shows model   
+class ShowsInfo(Base):
+    __tablename__ = 'shows'
+
+    id = Column(Integer, primary_key=True, index=True)
+    tid = Column(Integer)
+    screenid = Column(Integer, ForeignKey("screens.id"))
+    start_time = Column(String)
+    end_time = Column(String)
+    mid = Column(Integer, ForeignKey("movies.id"))
+    available_seats = Column(Integer)
+    book_seats = Column(Integer)
+    show_type = Column(Boolean)
+    show_ticket = Column(Integer)
+    show_date = Column(String)
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    screens = relationship('TheterScreenInfo', back_populates='show')
+    movie = relationship('MovieInfo', uselist=True,back_populates='m_show')

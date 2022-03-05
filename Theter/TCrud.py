@@ -7,6 +7,8 @@ from Theter.TSchemas import *
 from Common.Helper import *
 from Theter.TExceptions import *
 from fastapi import HTTPException
+from sqlalchemy.sql.expression import func
+
 
 
 # get a speicif theter
@@ -119,6 +121,10 @@ def getTheterScreen(tid:int, screenid:int,session:Session) -> TheterScreenInfo:
     screen = session.query(TheterScreenInfo).filter(TheterScreenInfo.tid == tid, TheterScreenInfo.id==screenid).first()
     return screen
 
+def getAllScreen(session:Session) -> TheterScreenInfo:
+    screens = session.query(TheterScreenInfo).options(joinedload(TheterScreenInfo.seats)).all()
+    return screens
+
 def updateScreen(session:Session, screenid:int, screen:CreateScreen) -> TheterScreenInfo:
     screen_update =  getTheterScreen(screen.tid, screenid, session)
     if screen_update:
@@ -146,3 +152,35 @@ def addSeats(session:Session, seat:CreateSeat) -> SeatsInfo:
     session.add(seat_add)
     session.commit()
     return Responses.success_result("Seat added successfully")                     
+
+
+# ------------------- movies ----------------
+
+def getAllMoview(session:Session) -> MovieInfo:
+    movies = session.query(MovieInfo).all()
+    return movies
+
+def addMovies(session:Session,movie:CreateMovies) -> MovieInfo:
+    add_movie = MovieInfo(**movie.dict())
+    session.add(add_movie)
+    session.commit()
+    session.refresh(add_movie)
+    return add_movie
+
+# -------------- shows crud -------------------------------
+def addShow(session:Session, shows:CreateShows) -> ShowsInfo:
+    add_show = ShowsInfo(**shows.dict())
+    session.add(add_show)
+    session.commit()
+    session.refresh(add_show)
+    return add_show
+
+def getAllShows(session:Session)-> ShowsInfo:
+    show = session.query(ShowsInfo).options(joinedload(ShowsInfo.screens), joinedload(ShowsInfo.movie)).all()
+    return show
+
+def getTheterShows(session:Session, tid:int) -> TheterScreenInfo:
+    theter_show = session.query(TheterScreenInfo).options(joinedload(TheterScreenInfo.show),
+                                 joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
+
+    return Responses.success_result_with_data("Shows Available", "ShowsData", theter_show)                             
