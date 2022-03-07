@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, ForwardRef
 from pydantic import BaseModel
 import datetime
 from sqlalchemy.orm import relationship
@@ -31,7 +31,7 @@ class Verification(CreateVerification):
     class Config:
         orm_mode = True
 
-# -------------- movies --------------
+# -------------- movies -------------
 class CreateMovies(BaseModel):
     mov_name: str
     language: str
@@ -44,7 +44,7 @@ class Movie(CreateMovies):
     class Config:
         orm_mode = True
 
-
+ListItem = ForwardRef("List[Movie]")
 # -------------- shows --------------------
 class CreateShows(BaseModel):
     tid: int
@@ -57,14 +57,17 @@ class CreateShows(BaseModel):
     show_type: bool 
     show_ticket: int 
     show_date: str 
+    movie: ListItem = []
+  
 
 class Show(CreateShows):
-    id = int
-    create_at = datetime.datetime
+    id : int
+    create_at: datetime.datetime
+    movie : List[Movie]
 
     class Config:
         orm_mode = True    
-
+Show.update_forward_refs()
 # -------------- screen seats schemas ----------------
 class CreateSeat(BaseModel):
     screenid: int

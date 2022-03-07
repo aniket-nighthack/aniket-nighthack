@@ -55,8 +55,7 @@ class TheterScreenInfo(Base):
     tid = Column(Integer, ForeignKey("theter.id"))
     theter = relationship("ThetersInfo", back_populates="screens")
     seats = relationship("SeatsInfo", uselist=True ,back_populates="screen")
-    show = relationship("ShowsInfo", uselist=True ,back_populates="screens")
-
+    show = relationship('ShowsInfo', uselist=True )
 # screen seats
 class SeatsInfo(Base):
     __tablename__ = 'seats'
@@ -67,8 +66,6 @@ class SeatsInfo(Base):
     seat_price = Column(Integer)
     seat_status = Column(Boolean)
     screenid = Column(Integer, ForeignKey("screens.id"))
-
-
     screen = relationship("TheterScreenInfo", back_populates="seats")
 
 # movie model
@@ -81,7 +78,7 @@ class MovieInfo(Base):
     mov_type = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    m_show = relationship("ShowsInfo", back_populates="movie")
+    # m_show = relationship("ShowsInfo", back_populates="movie", lazy=True)
 
 # current shows model   
 class ShowsInfo(Base):
@@ -89,10 +86,10 @@ class ShowsInfo(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     tid = Column(Integer)
-    screenid = Column(Integer, ForeignKey("screens.id"))
+    screenid = Column(ForeignKey(TheterScreenInfo.id))
     start_time = Column(String)
     end_time = Column(String)
-    mid = Column(Integer, ForeignKey("movies.id"))
+    mid = Column(Integer, ForeignKey(MovieInfo.id))
     available_seats = Column(Integer)
     book_seats = Column(Integer)
     show_type = Column(Boolean)
@@ -100,5 +97,8 @@ class ShowsInfo(Base):
     show_date = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    screens = relationship('TheterScreenInfo', back_populates='show')
-    movie = relationship('MovieInfo', uselist=True,back_populates='m_show')
+    # screens = relationship('TheterScreenInfo', back_populates='show', lazy=True)
+    screens = relationship(TheterScreenInfo, foreign_keys=[screenid])
+    movie = relationship(MovieInfo, uselist=True,  foreign_keys=[mid])
+    # movie = relationship('TheterScreenInfo',secondary='MovieInfo',back_populates='m_show', lazy=True)
+

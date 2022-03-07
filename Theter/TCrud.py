@@ -180,7 +180,18 @@ def getAllShows(session:Session)-> ShowsInfo:
     return show
 
 def getTheterShows(session:Session, tid:int) -> TheterScreenInfo:
-    theter_show = session.query(TheterScreenInfo).options(joinedload(TheterScreenInfo.show),
+    # theter_show = session.query(TheterScreenInfo).options(joinedload(TheterScreenInfo.show),
+    #                              joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
+    
+    theter_show = session.query(TheterScreenInfo,ShowsInfo).join(ShowsInfo).options(
+                                 joinedload(ShowsInfo.movie),
                                  joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
+    
+    # theter_show = session.query(TheterScreenInfo, SeatsInfo, ShowsInfo, MovieInfo).\
+    #               select_from(TheterScreenInfo).join(SeatsInfo, SeatsInfo.screenid == TheterScreenInfo.id).join(ShowsInfo).join(MovieInfo,  ShowsInfo.mid == MovieInfo.id).filter(TheterScreenInfo.tid == tid).all()
+
+    # theter_show = session.query(ShowsInfo, MovieInfo).\
+    #               select_from(ShowsInfo).join(MovieInfo, MovieInfo.id == ShowsInfo.mid).\
+    #                         filter(ShowsInfo.tid == tid).all()
 
     return Responses.success_result_with_data("Shows Available", "ShowsData", theter_show)                             
