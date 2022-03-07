@@ -3,6 +3,7 @@ from Connection.database import Base
 import datetime
 from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
+from User.model import UsersInfo
 
 # theters info
 class ThetersInfo(Base):
@@ -66,7 +67,7 @@ class SeatsInfo(Base):
     seat_price = Column(Integer)
     seat_status = Column(Boolean)
     screenid = Column(Integer, ForeignKey("screens.id"))
-    screen = relationship("TheterScreenInfo", back_populates="seats")
+    screen = relationship(TheterScreenInfo, foreign_keys=[screenid])
 
 # movie model
 class MovieInfo(Base):
@@ -78,14 +79,14 @@ class MovieInfo(Base):
     mov_type = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    # m_show = relationship("ShowsInfo", back_populates="movie", lazy=True)
 
 # current shows model   
 class ShowsInfo(Base):
     __tablename__ = 'shows'
 
     id = Column(Integer, primary_key=True, index=True)
-    tid = Column(Integer)
+    # tid = Column(Integer)
+    tid = Column(Integer, ForeignKey(ThetersInfo.id))
     screenid = Column(ForeignKey(TheterScreenInfo.id))
     start_time = Column(String)
     end_time = Column(String)
@@ -97,8 +98,22 @@ class ShowsInfo(Base):
     show_date = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    # screens = relationship('TheterScreenInfo', back_populates='show', lazy=True)
-    screens = relationship(TheterScreenInfo, foreign_keys=[screenid])
+    screens = relationship(TheterScreenInfo, uselist=True, foreign_keys=[screenid])
     movie = relationship(MovieInfo, uselist=True,  foreign_keys=[mid])
-    # movie = relationship('TheterScreenInfo',secondary='MovieInfo',back_populates='m_show', lazy=True)
+    theter = relationship(ThetersInfo, uselist=True,foreign_keys=[tid])
 
+    # show = relationship("BookingInfo", back_populates="showdetails")
+
+# booking a shows       
+class BookingInfo(Base):
+    __tablename__ = 'booking'
+
+    id = Column(Integer, primary_key=True, index=True)
+    showid = Column(Integer, ForeignKey(ShowsInfo.id))
+    seatid = Column(Integer, ForeignKey(SeatsInfo.id))
+    booking_slot = Column(String)
+    booking_date = Column(String)
+    uid = Column(Integer, ForeignKey(UsersInfo.id))
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    showdetails = relationship(ShowsInfo,uselist=True, foreign_keys=[showid])

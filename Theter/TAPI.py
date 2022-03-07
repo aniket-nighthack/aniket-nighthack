@@ -117,3 +117,19 @@ def theter_show(tid:int,session:Session = Depends(get_db)):
 @router.post("/show")
 def createshow(show:CreateShows, session:Session = Depends(get_db)):
     return addShow(session, show)
+
+
+# ------------------------- Booking ------------------------
+
+@router.post("/booking")
+def createBooking(booking:CreateBooking, session:Session = Depends(get_db)):
+    return addBooking(session, booking)
+
+@router.get("/booking")
+def bookings(session:Session = Depends(get_db)):
+    return getAllBookings(session)
+
+@router.get("/userbooking")
+def userBooking(uid:int,session:Session = Depends(get_db)):
+    return getUsersBooking(session, uid)
+

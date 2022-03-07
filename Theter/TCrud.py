@@ -8,6 +8,7 @@ from Common.Helper import *
 from Theter.TExceptions import *
 from fastapi import HTTPException
 from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import false, true
 
 
 
@@ -180,18 +181,33 @@ def getAllShows(session:Session)-> ShowsInfo:
     return show
 
 def getTheterShows(session:Session, tid:int) -> TheterScreenInfo:
-    # theter_show = session.query(TheterScreenInfo).options(joinedload(TheterScreenInfo.show),
-    #                              joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
-    
     theter_show = session.query(TheterScreenInfo,ShowsInfo).join(ShowsInfo).options(
                                  joinedload(ShowsInfo.movie),
-                                 joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
+                                 joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid, SeatsInfo.seat_status == True).all()
     
-    # theter_show = session.query(TheterScreenInfo, SeatsInfo, ShowsInfo, MovieInfo).\
-    #               select_from(TheterScreenInfo).join(SeatsInfo, SeatsInfo.screenid == TheterScreenInfo.id).join(ShowsInfo).join(MovieInfo,  ShowsInfo.mid == MovieInfo.id).filter(TheterScreenInfo.tid == tid).all()
-
-    # theter_show = session.query(ShowsInfo, MovieInfo).\
-    #               select_from(ShowsInfo).join(MovieInfo, MovieInfo.id == ShowsInfo.mid).\
-    #                         filter(ShowsInfo.tid == tid).all()
 
     return Responses.success_result_with_data("Shows Available", "ShowsData", theter_show)                             
+
+
+# --------------- booking -----------------------
+
+def getAllBookings(session:Session) -> BookingInfo:
+    bookings = session.query(BookingInfo).all()
+    return Responses.success_result_with_data("Bookings find", "Bookings", bookings)
+
+def getUsersBooking(session:Session, uid:int) -> BookingInfo:
+    booking = session.query(BookingInfo, ShowsInfo).join(ShowsInfo).options(
+                             joinedload(ShowsInfo.movie),
+                             joinedload(BookingInfo.showdetails),
+                             joinedload(ShowsInfo.screens),
+                             joinedload(ShowsInfo.theter)
+                             ).filter(BookingInfo.uid == uid).all()
+  
+    return Responses.success_result_with_data("User Booking Find", "BookindDetails", booking)
+
+def addBooking(session:Session, booking:CreateBooking) -> BookingInfo:
+    add_booking = BookingInfo(**booking.dict())
+    session.add(add_booking)
+    session.commit()
+    session.refresh(add_booking)
+    return add_booking

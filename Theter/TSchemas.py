@@ -68,6 +68,24 @@ class Show(CreateShows):
     class Config:
         orm_mode = True    
 Show.update_forward_refs()
+
+# -------------- booking schema --------------------
+class CreateBooking(BaseModel):
+    showid: int 
+    seatid: int   
+    booking_slot : str
+    booking_date: str
+    uid: int 
+
+class Booking(CreateBooking):
+    id: int  
+    create_at: datetime.datetime
+    showdetails: List[Show]
+
+    class Config:
+        orm_mode = True     
+
+
 # -------------- screen seats schemas ----------------
 class CreateSeat(BaseModel):
     screenid: int
