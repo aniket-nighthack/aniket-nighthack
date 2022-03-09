@@ -57,7 +57,6 @@ class CreateShows(BaseModel):
     show_type: bool 
     show_ticket: int 
     show_date: str 
-    movie: ListItem = []
   
 
 class Show(CreateShows):
@@ -76,6 +75,8 @@ class CreateBooking(BaseModel):
     booking_slot : str
     booking_date: str
     uid: int 
+    booking_status: bool
+
 
 class Booking(CreateBooking):
     id: int  

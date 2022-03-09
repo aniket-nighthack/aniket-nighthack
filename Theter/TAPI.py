@@ -30,6 +30,8 @@ def get_all(session:Session = Depends(get_db)):
 # create or add new theter 
 @router.post("/addTheter")
 def create_the(theter:CreateUpdateTheter, session:Session = Depends(get_db)):
+    new = create_theter(session, theter)
+    return new 
     check = get_specific_therter(session, theter.t_name)
     if check is None:
         new = create_theter(session, theter)
@@ -132,4 +134,8 @@ def bookings(session:Session = Depends(get_db)):
 @router.get("/userbooking")
 def userBooking(uid:int,session:Session = Depends(get_db)):
     return getUsersBooking(session, uid)
+
+@router.delete("/cancelbooking")
+def cancelBooking(bookingid:int,seatid: int, session:Session = Depends(get_db)):
+    return CancelBooking(session, bookingid,seatid)
 

@@ -183,7 +183,7 @@ def getAllShows(session:Session)-> ShowsInfo:
 def getTheterShows(session:Session, tid:int) -> TheterScreenInfo:
     theter_show = session.query(TheterScreenInfo,ShowsInfo).join(ShowsInfo).options(
                                  joinedload(ShowsInfo.movie),
-                                 joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid, SeatsInfo.seat_status == True).all()
+                                 joinedload(TheterScreenInfo.seats)).filter(TheterScreenInfo.tid == tid).all()
     
 
     return Responses.success_result_with_data("Shows Available", "ShowsData", theter_show)                             
@@ -196,11 +196,10 @@ def getAllBookings(session:Session) -> BookingInfo:
     return Responses.success_result_with_data("Bookings find", "Bookings", bookings)
 
 def getUsersBooking(session:Session, uid:int) -> BookingInfo:
-    booking = session.query(BookingInfo, ShowsInfo).join(ShowsInfo).options(
+    booking = session.query(ShowsInfo, BookingInfo).join(BookingInfo).options(
                              joinedload(ShowsInfo.movie),
-                             joinedload(BookingInfo.showdetails),
-                             joinedload(ShowsInfo.screens),
-                             joinedload(ShowsInfo.theter)
+                             joinedload(ShowsInfo.screens), 
+                             joinedload(ShowsInfo.theter),
                              ).filter(BookingInfo.uid == uid).all()
   
     return Responses.success_result_with_data("User Booking Find", "BookindDetails", booking)
@@ -210,4 +209,32 @@ def addBooking(session:Session, booking:CreateBooking) -> BookingInfo:
     session.add(add_booking)
     session.commit()
     session.refresh(add_booking)
+
+    seat = session.query(SeatsInfo).filter(SeatsInfo.id == booking.seatid).first()
+    if seat:
+        seat.seat_status = True
+        session.add(seat)
+        session.commit()
+        return Responses.success_result("Booking is created")
+    else:
+        return Responses.failed_result("Faild to create booking")    
+
     return add_booking
+
+def CancelBooking(session:Session, bookingid: int, seatid: int) -> BookingInfo:
+    booking = session.query(BookingInfo).filter(BookingInfo.id == bookingid).first()
+    if booking:
+        booking.booking_status = False
+        session.add(booking)
+        session.commit()
+
+        seat = session.query(SeatsInfo).filter(SeatsInfo.id == seatid).first()
+        if seat:
+            seat.seat_status = False
+            session.add(seat)
+            session.commit()
+            return Responses.success_result("Booking Cancelled Successfully")
+    return Responses.failed_result("Failed to cancelled booking")        
+
+def usersCancelBooking(session:Session, uid:int)-> BookingInfo:
+    user = session.query(BookingInfo).filter(BookingInfo.id == userid).first()    

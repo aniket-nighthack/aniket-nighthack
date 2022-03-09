@@ -54,6 +54,7 @@ class TheterScreenInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     screen_type = Column(String)
     tid = Column(Integer, ForeignKey("theter.id"))
+    
     theter = relationship("ThetersInfo", back_populates="screens")
     seats = relationship("SeatsInfo", uselist=True ,back_populates="screen")
     show = relationship('ShowsInfo', uselist=True )
@@ -115,5 +116,6 @@ class BookingInfo(Base):
     booking_date = Column(String)
     uid = Column(Integer, ForeignKey(UsersInfo.id))
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
+    booking_status = Column(Boolean)
 
     showdetails = relationship(ShowsInfo,uselist=True, foreign_keys=[showid])
