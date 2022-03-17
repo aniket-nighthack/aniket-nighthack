@@ -10,6 +10,7 @@ class CreateUser(BaseModel):
     password: str
     user_type: str
 
+
 # to instance the user data
 class User(CreateUser):
     id: int
