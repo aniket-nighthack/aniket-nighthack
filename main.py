@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from User import authenticatedUsers
 from User.Location import location_api
-from Theter.api import theters_api, screens_api, seats_api, movie_api, show_api
+from Theter.api import theters_api, screens_api, seats_api, movie_api, show_api, booking_api
 app = FastAPI()
 
 # authentication router
@@ -21,7 +21,8 @@ app.include_router(location_api.router)
 # theters for the end- users routes
 app.include_router(theters_api.router)
 
-
+# booking module for the end-user routes
+app.include_router(booking_api.router)
 
 # theters endpoints
 app.include_router(TAPI.router)

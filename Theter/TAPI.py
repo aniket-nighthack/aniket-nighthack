@@ -131,25 +131,25 @@ def delete(auth_token: str, session:Session = Depends(get_db)):
 
 # ------------------------- Booking ------------------------
 
-@router.post("/users/booking/new-booking/")
-def createBooking(booking:CreateBooking, session:Session = Depends(get_db)):
-    return addBooking(session, booking)
-
-@router.get("/booking")
-def bookings(session:Session = Depends(get_db)):
-    return getAllBookings(session)
-
-@router.get("/users/booking/user-booking/{uid}")
-def userBooking(uid:int,session:Session = Depends(get_db)):
-    return getUsersBooking(session, uid)
-
-@router.get("/users/cancelled-booking/{uid}")
-def cancelBookings(uid:int,session:Session = Depends(get_db)):
-    return usersCancelBooking(session, uid)
-
-@router.delete("/users/booking/cancel-booking/")
-def cancelBooking(bookingid:int,seatid: int, session:Session = Depends(get_db)):
-    return CancelBooking(session, bookingid,seatid)
+# @router.post("/users/booking/new-booking/")
+# def createBooking(booking:CreateBooking, session:Session = Depends(get_db)):
+#     return addBooking(session, booking)
+#
+# @router.get("/booking")
+# def bookings(session:Session = Depends(get_db)):
+#     return getAllBookings(session)
+#
+# @router.get("/users/booking/user-booking/{uid}")
+# def userBooking(uid:int,session:Session = Depends(get_db)):
+#     return getUsersBooking(session, uid)
+#
+# @router.get("/users/cancelled-booking/{uid}")
+# def cancelBookings(uid:int,session:Session = Depends(get_db)):
+#     return usersCancelBooking(session, uid)
+#
+# @router.delete("/users/booking/cancel-booking/")
+# def cancelBooking(bookingid:int,seatid: int, session:Session = Depends(get_db)):
+#     return CancelBooking(session, bookingid,seatid)
 
 # @router.get('/seatsinfo')
 # def seatsInfo(session:Session = Depends(get_db)):
