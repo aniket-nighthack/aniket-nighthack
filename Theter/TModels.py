@@ -1,9 +1,10 @@
-from sqlalchemy import Column, String, ForeignKey,Integer, DateTime, Time, Boolean
+from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, Time, Boolean
 from Connection.database import Base
 import datetime
 from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
 from User.model import UsersInfo
+
 
 # theters info
 class ThetersInfo(Base):
@@ -16,11 +17,14 @@ class ThetersInfo(Base):
     opening_time = Column(String)
     closing_time = Column(String)
     auth_token = Column(String)
+    state = Column(String)
+    city = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    docs = relationship("TheterDocsInfo",uselist=True, back_populates="theter")
+    docs = relationship("TheterDocsInfo", uselist=True, back_populates="theter")
     verification = relationship("TheterVerificationInfo", uselist=True, back_populates="theter")
-    screens = relationship("TheterScreenInfo",  uselist=True, back_populates="theter")
+    screens = relationship("TheterScreenInfo", uselist=True, back_populates="theter")
+
 
 # theter documents model
 class TheterDocsInfo(Base):
@@ -32,6 +36,7 @@ class TheterDocsInfo(Base):
     tid = Column(Integer, ForeignKey("theter.id"))
 
     theter = relationship("ThetersInfo", back_populates="docs")
+
 
 #  theter verification model
 class TheterVerificationInfo(Base):
@@ -47,6 +52,7 @@ class TheterVerificationInfo(Base):
 
     theter = relationship("ThetersInfo", back_populates="verification")
 
+
 # thetr screen model
 class TheterScreenInfo(Base):
     __tablename__ = 'screens'
@@ -54,10 +60,12 @@ class TheterScreenInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     screen_type = Column(String)
     tid = Column(Integer, ForeignKey("theter.id"))
-    
+
     theter = relationship("ThetersInfo", back_populates="screens")
-    seats = relationship("SeatsInfo", uselist=True ,back_populates="screen")
-    show = relationship('ShowsInfo', uselist=True )
+    seats = relationship("SeatsInfo", uselist=True, back_populates="screen")
+    show = relationship('ShowsInfo', uselist=True)
+
+
 # screen seats
 class SeatsInfo(Base):
     __tablename__ = 'seats'
@@ -69,6 +77,7 @@ class SeatsInfo(Base):
     seat_status = Column(Boolean)
     screenid = Column(Integer, ForeignKey("screens.id"))
     screen = relationship(TheterScreenInfo, foreign_keys=[screenid])
+
 
 # movie model
 class MovieInfo(Base):
@@ -92,20 +101,21 @@ class ShowsInfo(Base):
     start_time = Column(String)
     end_time = Column(String)
     mid = Column(Integer, ForeignKey(MovieInfo.id))
-    available_seats = Column(Integer)
-    book_seats = Column(Integer)
+    # available_seats = Column(Integer)
+    # book_seats = Column(Integer)
     show_type = Column(Boolean)
     show_ticket = Column(Integer)
     show_date = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     screens = relationship(TheterScreenInfo, uselist=True, foreign_keys=[screenid])
-    movie = relationship(MovieInfo, uselist=True,  foreign_keys=[mid])
-    theter = relationship(ThetersInfo, uselist=True,foreign_keys=[tid])
+    movie = relationship(MovieInfo, uselist=True, foreign_keys=[mid])
+    theter = relationship(ThetersInfo, uselist=True, foreign_keys=[tid])
 
     # show = relationship("BookingInfo", back_populates="showdetails")
 
-# booking a shows       
+
+# booking a shows
 class BookingInfo(Base):
     __tablename__ = 'booking'
 
@@ -118,4 +128,4 @@ class BookingInfo(Base):
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
     booking_status = Column(Boolean)
 
-    showdetails = relationship(ShowsInfo,uselist=True, foreign_keys=[showid])
+    showdetails = relationship(ShowsInfo, uselist=True, foreign_keys=[showid])

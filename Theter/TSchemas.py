@@ -52,12 +52,9 @@ class CreateShows(BaseModel):
     start_time: str 
     end_time: str
     mid: int
-    available_seats: int 
-    book_seats: int 
     show_type: bool 
     show_ticket: int 
     show_date: str 
-  
 
 class Show(CreateShows):
     id : int
@@ -125,6 +122,8 @@ class CreateUpdateTheter(BaseModel):
     t_contact : str
     opening_time : str
     closing_time : str
+    state : str
+    city : str
 
 class Theter(CreateUpdateTheter):
     id : int
