@@ -48,7 +48,10 @@ def getTheterShows(session: Session, tid: int) -> TheterScreenInfo:
     else:
         return Responses.failed_result("Sorry current movie is not available")
 
-    # get a show by screen id
+# get a show's by logged theter user
+def currentTShows(session:Session, uid:int) -> ShowsInfo:
+    theter = session.query(ThetersInfo).filter(ThetersInfo.user_id == uid).first()
+    return theter
 
 
 def showByScreenId(session: Session, screenid: int) -> ShowsInfo:

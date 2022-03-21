@@ -77,3 +77,18 @@ def deleteSeatInfo(session:Session, id:int) -> SeatsInfo:
         return Responses.success_result("Seat Information Deleted Successfully")
     else:
         return Responses.failed_result("Failed to delete seat information")    
+
+# ---------------- check seat is avialabel or not ---
+def seatAvailableOrNot(session: Session, seatid:int) -> SeatsInfo:
+    seat = getSeatById(session, seatid)
+    if seat:
+        if seat.seat_status:
+            print("all seats available")
+            return True
+        else:   
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"This seat is already booked by anothe user.please try to book another seat") 
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                             detail="Invalid seat")
+       

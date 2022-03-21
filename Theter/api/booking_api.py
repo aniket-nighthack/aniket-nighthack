@@ -21,18 +21,26 @@ def createBooking(booking: CreateBooking, session: Session = Depends(get_db), cu
     if booking.noOfSeats != len(booking.seatid):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Number of seats and seat ids must match")
-    return addBooking(session, booking)
+    for i in booking.seatid:
+        seatAvailableOrNot(session, i)   
+    return addBooking(session, booking, current_user.id)
 
 
 @router.get("/booking")
 def bookings(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
     return getAllBookings(session)
 
+@router.get("/old-booking/")
+def userOldBooking(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+    return getUserOldBookings(session, current_user.id)
 
 @router.get("/booking/user-booking/{uid}")
 def userBooking(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
     return getUsersBooking(session, current_user.id)
 
+@router.get("/booking_seats/")
+def bookingSeats(bookingid:int,session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+    return getSeatsByBooking(session, bookingid)
 
 @router.get("/cancelled-booking/{uid}")
 def cancelBookings(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
@@ -40,5 +48,5 @@ def cancelBookings(session: Session = Depends(get_db), current_user: User = Depe
 
 
 @router.delete("/booking/cancel-booking/")
-def cancelBooking(bookingid: int, seatid: int, session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
-    return CancelBooking(session, bookingid, seatid)
+def cancelBooking(bookingid: int, session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+    return CancelBooking(session, bookingid)

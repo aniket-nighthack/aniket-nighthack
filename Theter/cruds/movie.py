@@ -15,6 +15,22 @@ def getAllMoview(session:Session) -> MovieInfo:
     movies = session.query(MovieInfo).all()
     return movies
 
+# get all current movies
+def getCurrentMovies(session:Session) -> MovieInfo:
+    movies = session.query(MovieInfo).filter(MovieInfo.status == True).all()
+    if movies:
+        return Responses.success_result_with_data("Current Movies find", "movies", movies)
+    else:
+        return Responses.failed_result("There is no current movies")
+
+# get all old's movies
+def getOldMovies(session:Session) -> MovieInfo:
+    movies = session.query(MovieInfo).filter(MovieInfo.status == False).all()
+    if movies:
+        return Responses.success_result_with_data("Old Movies find", "movies", movies)
+    else:
+        return Responses.failed_result("There is no old movies")
+
 # get movie by id
 def getMovieById(session:Session, id: int) -> MovieInfo:
     movies = session.query(MovieInfo).filter(MovieInfo.id == id).first()
@@ -48,6 +64,7 @@ def updateMovieInfo(session:Session, movie:CreateMovies, id:int) -> MovieInfo:
         return Responses.success_result_with_data("Movie Information Updated Successfully", "movieData", movie_info)
     else:
         return Responses.failed_result("Failed to update movie details")  
+
 
 
 # delete the movie details

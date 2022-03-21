@@ -138,3 +138,16 @@ class BookingInfo(Base):
     booking_status = Column(Boolean)
 
     showdetails = relationship(ShowsInfo, uselist=True, foreign_keys=[showid])
+
+# multiple seats booking for a shows
+class ShowSeatBookingInfo(Base):
+    __tablename__ = 'shows_seat_booking'
+
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey(BookingInfo.id))
+    seat_id = Column(Integer, ForeignKey(SeatsInfo.id))
+    status = Column(Boolean)
+
+    seatDeatils = relationship(SeatsInfo, uselist=True, foreign_keys=[seat_id])
+    bookingDeatils = relationship(BookingInfo, uselist=True,  foreign_keys=[booking_id])
+    

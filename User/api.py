@@ -26,7 +26,7 @@ def get_db():
 
 
 @router.get("/all-users/")
-def getAllUsers(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+def getAllUsers(session: Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
     users = getUsers(session)
     return users
 

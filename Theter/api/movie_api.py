@@ -21,17 +21,25 @@ router = APIRouter(prefix='/theter',
 def movies(session:Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
     return getAllMoview(session)
 
+@router.get("/current-movies/")
+def currentMovies(session:Session = Depends(get_db), current_User: User = Depends(oauth.check_if_admin)):
+    return getCurrentMovies(session)
+
+@router.get("/old-movies/")
+def oldMovies(session:Session = Depends(get_db), current_User: User = Depends(oauth.check_if_admin)):
+    return getOldMovies(session)
+
 @router.post("/movies/create-movies/")
 def createMovie(movie:CreateMovies, session:Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
     return addMovies(session, movie, current_user.id)
 
 # update movie details
 @router.put("/movies/update-movie/{id}")
-def updateMovie(id: int, movie:CreateMovies,session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+def updateMovie(id: int, movie:CreateMovies,session: Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
     return updateMovieInfo(session, movie, id) 
 
 # delete movie details
 @router.delete("/movies/delete-movie/{id}")
-def deleteMovie(id:int, session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+def deleteMovie(id:int, session: Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
     return deleteMovieInfo(session, id)
 

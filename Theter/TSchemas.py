@@ -88,6 +88,18 @@ class Booking(CreateBooking):
         orm_mode = True     
 
 
+# show seats booking for a multiple booking
+class ShowMultipleBookings(CreateBooking):
+    booking_id: int
+    seat_id: int
+    status: int
+
+class ShowsBookings(ShowMultipleBookings):
+    id : int
+
+    class Config:
+        orm_mode = True    
+
 # -------------- screen seats schemas ----------------
 class CreateSeat(BaseModel):
     screenid: int

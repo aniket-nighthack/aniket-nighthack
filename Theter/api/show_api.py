@@ -22,9 +22,13 @@ def allShows(session:Session = Depends(get_db),current_user: User = Depends(oaut
     return getAllShows(session)
 
 @router.get("/theter-show/{tid}")
-def theter_show(tid:int,session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
+def theter_show(tid:int,session:Session = Depends(get_db),current_user: User = Depends(oauth.check_if_admin)):
     return getTheterShows(session, tid)
 
+@router.get("/current-show")
+def currentTheterShows(session:Session = Depends(get_db), current_user: User = Depends(oauth.check_if_merchant)):
+    return currentTShows(session, current_user.id)
+    
 @router.post("/show/create-show/")
 def createshow(show:CreateShows, session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
     return addShow(session, show)
