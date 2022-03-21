@@ -75,19 +75,6 @@ def addBooking(session: Session, booking: CreateBooking, uid:int) -> BookingInfo
 
 # cancel the user booking
 def CancelBooking(session: Session, bookingid: int) -> BookingInfo:
-    # booking = session.query(BookingInfo).filter(BookingInfo.id == bookingid).first()
-    # if booking:
-    #     booking.booking_status = False
-    #     session.add(booking)
-    #     session.commit()
-
-    #     seat = session.query(SeatsInfo).filter(SeatsInfo.id == seatid).first()
-    #     if seat:
-    #         seat.seat_status = True
-    #         session.add(seat)
-    #         session.commit()
-    #         return Responses.success_result("Booking Cancelled Successfully")
-    # return Responses.failed_result("Failed to cancelled booking")
 
     seats = session.query(ShowSeatBookingInfo).filter(ShowSeatBookingInfo.booking_id == bookingid).all()
     for i in seats:
@@ -148,3 +135,18 @@ def removeBookedSeats(session, seat_id:int) -> ShowSeatBookingInfo:
     booking = session.query(ShowSeatBookingInfo).filter(ShowSeatBookingInfo.seat_id == seat_id).first()
     session.delete(booking)
     session.commit()
+
+#  update the booking
+def updateBookingUpdate(sesssion:Session, booking_id:int) -> BookingInfo:
+    book = sesssion.query(BookingInfo).filter(BookingInfo.id == booking_id).first()
+    if book:
+        book.booking_status = False
+
+        sesssion.add(book)
+        sesssion.commit()
+        sesssion.refresh(book)
+
+        return Responses.success_result("booking status is changed")
+    else:
+        return Responses.failed_result("failed to change a booking status")
+

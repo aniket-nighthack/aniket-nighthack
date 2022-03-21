@@ -46,6 +46,9 @@ def bookingSeats(bookingid:int,session: Session = Depends(get_db), current_user:
 def cancelBookings(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
     return usersCancelBooking(session, current_user.id)
 
+@router.post("/change_booking_status/{bookingid}")
+def changeBooking(bookingid:int, session:Session = Depends(get_db), current_user:User = Depends(oauth.get_current_user)):
+    return updateBookingUpdate(session, bookingid)
 
 @router.delete("/booking/cancel-booking/")
 def cancelBooking(bookingid: int, session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):

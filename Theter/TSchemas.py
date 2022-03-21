@@ -38,11 +38,11 @@ class CreateMovies(BaseModel):
     mov_type: str
     description: str
     duration: str
+    status: bool
 
 class Movie(CreateMovies):
     id: int
     create_at: datetime.datetime
-    status: bool
     tid: int
     class Config:
         orm_mode = True
@@ -72,10 +72,8 @@ Show.update_forward_refs()
 class CreateBooking(BaseModel):
     showid: int
     noOfSeats: int
-    # booking_slot : str
-    # booking_date: str
-    # booking_status: bool
     seatid: List[int]
+    status: bool
 
 
 class Booking(CreateBooking):
