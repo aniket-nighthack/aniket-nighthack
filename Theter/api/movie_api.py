@@ -22,8 +22,8 @@ def movies(session:Session = Depends(get_db), current_user: User = Depends(oauth
     return getAllMoview(session)
 
 @router.post("/movies/create-movies/")
-def createMovie(movie:CreateMovies, session:Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
-    return addMovies(session, movie)
+def createMovie(movie:CreateMovies, session:Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
+    return addMovies(session, movie, current_user.id)
 
 # update movie details
 @router.put("/movies/update-movie/{id}")

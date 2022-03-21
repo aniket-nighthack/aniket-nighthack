@@ -33,7 +33,7 @@ class LoginSchema(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
-    role: Optional[str] = None
+    user_type: Optional[str] = None
     name: Optional[str] = None
 
 
@@ -41,11 +41,10 @@ class TokenData(BaseModel):
 class CreateLocation(BaseModel):
     state: str
     city: str
-    user_id: int
-
 
 class Location(CreateLocation):
     id: int
+    user_id: int
 
     class Config:
         orm_mode = True

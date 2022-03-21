@@ -9,6 +9,7 @@ from Common.token import *
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from User.model import *
+from Theter.TModels import *
 
 from ..schemas import CreateLocation
 from Theter.cruds.Theters import *
@@ -20,9 +21,9 @@ def getLastLocation(session: Session, user_id: int) -> LocationInfo:
 
 
 # add a location or update location
-def updateLocation(session: Session, location: CreateLocation) -> LocationInfo:
+def updateLocation(session: Session, location: CreateLocation, uid:int) -> LocationInfo:
     
-    last_location = getLastLocation(session, location.user_id)
+    last_location = getLastLocation(session, uid)
     if last_location:
         last_location.state = location.state
         last_location.city = location.city
@@ -35,8 +36,7 @@ def updateLocation(session: Session, location: CreateLocation) -> LocationInfo:
 
         return Responses.success_result_with_data("User new location updated successfully", "theters", theters)
     else:
-        new_location = LocationInfo(**location.dict())
-        # new_location = LocationInfo(state=location.state, city=location.city, user_id=location.user_id)
+        new_location = LocationInfo(state=location.state, city=location.city, user_id=uid)
         session.add(new_location)
         session.commit()
         session.refresh(new_location)
@@ -51,3 +51,13 @@ def oldLocation(session:Session, user_id:int) -> LocationInfo:
     last_location = getLastLocation(session, user_id)
     theters = theters_from_state_and_city(session, last_location.state, last_location.city)
     return theters
+
+# fetch all movies by location
+def moviesByLocation(session:Session, userid: int):
+    user_location = getLastLocation(session, userid)
+    if user_location:
+        movies = session.query(MovieInfo).join(ThetersInfo)\
+            .filter(ThetersInfo.state == user_location.state, ThetersInfo.city == user_location.city,
+                                                    ).all()
+        return Responses.success_result_with_data("location movie fond", "movies", movies)
+

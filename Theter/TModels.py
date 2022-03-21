@@ -20,10 +20,12 @@ class ThetersInfo(Base):
     state = Column(String)
     city = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
+    user_id = Column(Integer, ForeignKey(UsersInfo.id))
 
     docs = relationship("TheterDocsInfo", uselist=True, back_populates="theter")
     verification = relationship("TheterVerificationInfo", uselist=True, back_populates="theter")
     screens = relationship("TheterScreenInfo", uselist=True, back_populates="theter")
+    movies = relationship("MovieInfo", uselist=True, back_populates="theter")
 
 
 # theter documents model
@@ -76,6 +78,7 @@ class SeatsInfo(Base):
     seat_price = Column(Integer)
     seat_status = Column(Boolean)
     screenid = Column(Integer, ForeignKey("screens.id"))
+
     screen = relationship(TheterScreenInfo, foreign_keys=[screenid])
 
 
@@ -87,8 +90,13 @@ class MovieInfo(Base):
     mov_name = Column(String)
     language = Column(String)
     mov_type = Column(String)
+    description = Column(String)
+    duration = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
+    tid = Column(Integer, ForeignKey(ThetersInfo.id))
+    status = Column(Boolean)
 
+    theter = relationship(ThetersInfo, back_populates="movies")
 
 # current shows model   
 class ShowsInfo(Base):
@@ -122,6 +130,7 @@ class BookingInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     showid = Column(Integer, ForeignKey(ShowsInfo.id))
     seatid = Column(Integer, ForeignKey(SeatsInfo.id))
+    noOfSeats = Column(Integer)
     booking_slot = Column(String)
     booking_date = Column(String)
     uid = Column(Integer, ForeignKey(UsersInfo.id))

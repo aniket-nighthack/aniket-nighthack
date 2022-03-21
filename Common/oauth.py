@@ -12,7 +12,10 @@ def get_current_user(data: str = Depends(oauth2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    return token.verify_token(data, credentials_exception)
+    token_details = token.verify_token(data, credentials_exception)
+    if token_details.user_type == "admin":
+        raise credentials_exception
+    return token_details
 
 
 def check_if_admin(data: str = Depends(oauth2_scheme)):
@@ -23,7 +26,7 @@ def check_if_admin(data: str = Depends(oauth2_scheme)):
     )
     print("checking admin")
     token_details = token.verify_token(data, credentials_exception)
-    if token_details.role != "admin":
+    if token_details.user_type != "admin":
         raise credentials_exception
     return token_details
 

@@ -36,11 +36,14 @@ class CreateMovies(BaseModel):
     mov_name: str
     language: str
     mov_type: str
+    description: str
+    duration: str
 
 class Movie(CreateMovies):
     id: int
     create_at: datetime.datetime
-
+    status: bool
+    tid: int
     class Config:
         orm_mode = True
 
@@ -67,16 +70,17 @@ Show.update_forward_refs()
 
 # -------------- booking schema --------------------
 class CreateBooking(BaseModel):
-    showid: int 
-    seatid: int   
-    booking_slot : str
-    booking_date: str
-    uid: int 
-    booking_status: bool
+    showid: int
+    noOfSeats: int
+    # booking_slot : str
+    # booking_date: str
+    # booking_status: bool
+    seatid: List[int]
 
 
 class Booking(CreateBooking):
-    id: int  
+    id: int
+    uid: int
     create_at: datetime.datetime
     showdetails: List[Show]
 

@@ -9,52 +9,46 @@ from Common.APIResponses import Responses
 from fastapi_utils import *
 import shutil
 from User.crud import *
-
+from User.userAuth import *
+from Common import oauth, token, Helper
 router = APIRouter(prefix='/theter',
     tags=["Theter-User"])
 
-def get_db():
-    db = None
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close() 
-
 
 # --------------- theter user login ---------------
-@router.get("/sign-in")
-def loignUser(mobile:str, session:Session = Depends(get_db)):
-    return login_user(session, mobile)
+# @router.get("/sign-in")
+# def loignUser(mobile:str, session:Session = Depends(get_db)):
+#     return login_user(session, mobile)
 
 
 # --------------- thete information ---------------------
 
 # get all theters data
+# @router.get("/all-theters/")
+# def get_all(session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
+#     return get_all_theter(session)
+
 @router.get("/all-theters/")
-def get_all(session:Session = Depends(get_db)):
+def get_all(session:Session = Depends(get_db),current_user: User = Depends(oauth.check_if_admin)):
     return get_all_theter(session)
+
 
 # create or add new theter 
 @router.post("/add-theter/")
-def create_the(theter:CreateUpdateTheter, session:Session = Depends(get_db)):
-    new = create_theter(session, theter)
-    return new 
-    check = get_specific_therter(session, theter.t_name)
-    if check is None:
-        new = create_theter(session, theter)
-        return new 
-    else:
-        return Responses.failed_result("Theter is already register please try again")
+def create_the(theter:CreateUpdateTheter, session:Session = Depends(get_db),current_user: User = Depends(oauth.check_if_admin)):
+    if Helper.alphaNumeric(theter.t_contact):
+        new = create_theter(session, theter, current_user.id)
+        return new
 
+@router.put("/update-theter/")
+def update(id: int, theter: CreateUpdateTheter, session:Session = Depends(get_db),current_user: User = Depends(oauth.check_if_admin)):
+    if Helper.alphaNumeric(theter.t_contact):
+        return update_theter(session, id, theter)
 
-@router.put("/update-theter/{auth_token}")
-def update(theter: CreateUpdateTheter,auth_token: str, session:Session = Depends(get_db)):
-    return update_theter(session, auth_token, theter)
 
 @router.delete("/delete-theter/{auth_token}")
-def delete(auth_token: str, session:Session = Depends(get_db)):
-    return deleter_therer(session, auth_token)
+def delete(id: int, session:Session = Depends(get_db),current_user: User = Depends(oauth.check_if_admin)):
+    return deleter_therer(session, id)
 
 
 # --------------- theter documents --------------------------------

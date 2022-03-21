@@ -18,15 +18,15 @@ router = APIRouter(prefix='/theter',
 
 
 @router.get("/show/all-shows/")
-def allShows(session:Session = Depends(get_db)):
+def allShows(session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
     return getAllShows(session)
 
 @router.get("/theter-show/{tid}")
-def theter_show(tid:int,session:Session = Depends(get_db)):    
+def theter_show(tid:int,session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
     return getTheterShows(session, tid)
 
 @router.post("/show/create-show/")
-def createshow(show:CreateShows, session:Session = Depends(get_db)):
+def createshow(show:CreateShows, session:Session = Depends(get_db),current_user: User = Depends(oauth.get_current_user)):
     return addShow(session, show)
 
 

@@ -23,19 +23,19 @@ def get_all_theter(session:Session) -> List[ThetersInfo]:
     return Responses.success_result_with_data("Theters fond", "TheterData", theter)
 
 # create new theter
-def create_theter(session:Session, theter:CreateUpdateTheter):
+def create_theter(session:Session, theter:CreateUpdateTheter, user_id:int):
     token = getAuthToken()
     new = ThetersInfo(t_name=theter.t_name, t_address=theter.t_address, t_contact=theter.t_contact,
                           auth_token=token, opening_time=theter.opening_time, closing_time=theter.closing_time,
-                          state=theter.state, city=theter.city)
+                          state=theter.state, city=theter.city, user_id=user_id)
     session.add(new)
     session.commit()
     return Responses.success_result("New theter added successfully")
 
 # update the theter information
-def  update_theter(session:Session, auth_token:str, theter_info:CreateUpdateTheter)-> ThetersInfo:
+def  update_theter(session:Session, tid:int, theter_info:CreateUpdateTheter)-> ThetersInfo:
 
-    theter = session.query(ThetersInfo).filter(ThetersInfo.auth_token == auth_token).first()
+    theter = session.query(ThetersInfo).filter(ThetersInfo.id == tid).first()
     if theter:
         theter.t_name = theter_info.t_name
         theter.t_address = theter_info.t_address

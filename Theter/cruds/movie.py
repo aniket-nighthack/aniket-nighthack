@@ -21,8 +21,13 @@ def getMovieById(session:Session, id: int) -> MovieInfo:
     return movies 
 
 # add new movies to the database
-def addMovies(session:Session,movie:CreateMovies) -> MovieInfo:
-    add_movie = MovieInfo(**movie.dict())
+def addMovies(session:Session,movie:CreateMovies, userid:int) -> MovieInfo:
+    # add_movie = MovieInfo(**movie.dict())
+    theter = session.query(ThetersInfo).filter(ThetersInfo.user_id == userid).first()
+
+    add_movie = MovieInfo(mov_name=movie.mov_name, language=movie.language,
+                          mov_type = movie.mov_type, tid=theter.id,
+                          description=movie.description, duration=movie.duration, status=True)
     session.add(add_movie)
     session.commit()
     session.refresh(add_movie)

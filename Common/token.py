@@ -21,11 +21,12 @@ def verify_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         full_name: str = payload.get("sub")
+        user_type: str = payload.get("user_type")
         # role: str = payload.get("role")
         if full_name is None:
             print("full_name empty")
             raise credentials_exception
-        token_data = TokenData(id=full_name)
+        token_data = TokenData(id=full_name, user_type=user_type)
     except JWTError:
         raise credentials_exception
     return token_data

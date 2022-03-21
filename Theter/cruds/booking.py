@@ -36,6 +36,7 @@ def addBooking(session: Session, booking: CreateBooking) -> BookingInfo:
     session.add(add_booking)
     session.commit()
     session.refresh(add_booking)
+    session.begin_nested()
 
     seat = session.query(SeatsInfo).filter(SeatsInfo.id == booking.seatid).first()
     if seat:
