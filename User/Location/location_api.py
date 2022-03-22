@@ -33,6 +33,7 @@ def update(location: CreateLocation, session: Session = Depends(get_db),
 def userOldLocationTheters(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
     return oldLocation(session, current_user.id)
 
+
 # get movies by location of user
 # @router.get("/location/movies/")
 # def movieLocation(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
