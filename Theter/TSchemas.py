@@ -7,29 +7,32 @@ from sqlalchemy.orm import relationship
 # create a schema for theter documents
 class CreateTheterDocs(BaseModel):
     shop_act_license: str
-    gst_license : str
-    
+    gst_license: str
+
 
 class TheterDocs(CreateTheterDocs):
-    id: int 
-    tid: int  
+    id: int
+    tid: int
 
     class Config:
         orm_mode = True
 
-# for verification model           
+
+# for verification model
 class CreateVerification(BaseModel):
     shopact_verify: bool
     gst_verify: bool
     is_live: bool
     is_verifyed: bool
-    tid : int
+    tid: int
+
 
 class Verification(CreateVerification):
-    id : int
+    id: int
 
     class Config:
         orm_mode = True
+
 
 # -------------- movies -------------
 class CreateMovies(BaseModel):
@@ -40,33 +43,56 @@ class CreateMovies(BaseModel):
     duration: str
     status: bool
 
+
 class Movie(CreateMovies):
     id: int
     create_at: datetime.datetime
     tid: int
+
     class Config:
         orm_mode = True
 
+
 ListItem = ForwardRef("List[Movie]")
+
+
+# movie allocated
+class CreateMovieAllocated(BaseModel):
+    mid: int
+    tid: int
+
+
+class AllocateMovies(CreateMovieAllocated):
+    id: int
+    create_at: datetime.datetime
+
+    class Config:
+        orm_mode = True
+
+
 # -------------- shows --------------------
 class CreateShows(BaseModel):
     tid: int
     screenid: int
-    start_time: str 
+    start_time: str
     end_time: str
     mid: int
-    show_type: bool 
-    show_ticket: int 
-    show_date: str 
+    show_type: bool
+    show_ticket: int
+    show_date: str
+
 
 class Show(CreateShows):
-    id : int
+    id: int
     create_at: datetime.datetime
-    movie : List[Movie]
+    movie: List[Movie]
 
     class Config:
-        orm_mode = True    
+        orm_mode = True
+
+
 Show.update_forward_refs()
+
 
 # -------------- booking schema --------------------
 class CreateBooking(BaseModel):
@@ -83,65 +109,70 @@ class Booking(CreateBooking):
     showdetails: List[Show]
 
     class Config:
-        orm_mode = True     
+        orm_mode = True
+
+    # show seats booking for a multiple booking
 
 
-# show seats booking for a multiple booking
 class ShowMultipleBookings(CreateBooking):
     booking_id: int
     seat_id: int
     status: int
 
+
 class ShowsBookings(ShowMultipleBookings):
-    id : int
+    id: int
 
     class Config:
-        orm_mode = True    
+        orm_mode = True
 
-# -------------- screen seats schemas ----------------
+    # -------------- screen seats schemas ----------------
+
+
 class CreateSeat(BaseModel):
     screenid: int
     tid: int
-    seat_name: str 
-    seat_price: int 
-    seat_status : bool
+    seat_name: str
+    seat_price: int
+    seat_status: bool
+
 
 class Seats(CreateSeat):
-    id : int
+    id: int
 
     class Config:
-        orm_mode = True    
+        orm_mode = True
+
+    # -------------- screen schemas --------------------
 
 
-# -------------- screen schemas --------------------
 class CreateScreen(BaseModel):
-    screen_type: str  
+    screen_type: str
     tid: int
 
 
 class Screen(CreateScreen):
-    id : int
-    seats: List[Seats] 
+    id: int
+    seats: List[Seats]
 
     class Config:
         orm_mode = True
 
 
-
-
 # for create and update
 class CreateUpdateTheter(BaseModel):
-    t_name : str
-    t_address : str
-    t_contact : str
-    opening_time : str
-    closing_time : str
-    state : str
-    city : str
+    t_name: str
+    t_address: str
+    t_contact: str
+    opening_time: str
+    closing_time: str
+    state: str
+    city: str
+
 
 class Theter(CreateUpdateTheter):
-    id : int
-    auth_token : str
+    id: int
+    auth_token: str
     create_at: datetime.datetime
     docs: List[TheterDocs]
     verification: List[Verification]
@@ -149,8 +180,3 @@ class Theter(CreateUpdateTheter):
 
     class Config:
         orm_mode = True
-
-
- 
-
-

@@ -3,6 +3,8 @@ from Connection.database import Base
 import datetime
 from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
+
+from Theter.TSchemas import Booking, Movie
 from User.model import UsersInfo
 
 
@@ -98,7 +100,8 @@ class MovieInfo(Base):
 
     theter = relationship(ThetersInfo, back_populates="movies")
 
-# current shows model   
+
+# current shows model
 class ShowsInfo(Base):
     __tablename__ = 'shows'
 
@@ -139,6 +142,7 @@ class BookingInfo(Base):
 
     showdetails = relationship(ShowsInfo, uselist=True, foreign_keys=[showid])
 
+
 # multiple seats booking for a shows
 class ShowSeatBookingInfo(Base):
     __tablename__ = 'shows_seat_booking'
@@ -149,5 +153,29 @@ class ShowSeatBookingInfo(Base):
     status = Column(Boolean)
 
     seatDeatils = relationship(SeatsInfo, uselist=True, foreign_keys=[seat_id])
-    bookingDeatils = relationship(BookingInfo, uselist=True,  foreign_keys=[booking_id])
-    
+    bookingDeatils = relationship(BookingInfo, uselist=True, foreign_keys=[booking_id])
+
+
+# payment module after bookings
+class PaymentInfo(Base):
+    __tablename__ = 'payment'
+
+    id = Column(Integer, primary_key=True, index=True)
+    amount = Column(Integer)
+    transaction_id = Column(Integer)
+    booking_id = Column(Integer, ForeignKey(BookingInfo.id))
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    booking = relationship(BookingInfo, foreign_keys=[booking_id])
+
+
+# movie allocate to multiple theter
+class AllocateMoviesInfo(Base):
+    __tablename__ = 'allocate_movies'
+
+    id = Column(Integer, primary_key=True, index=True)
+    mid = Column(Integer, ForeignKey(MovieInfo.id))
+    tid = Column(Integer, ForeignKey(ThetersInfo.id))
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    movie = relationship(MovieInfo, foreign_keys=[mid])
