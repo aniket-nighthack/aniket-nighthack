@@ -47,8 +47,11 @@ def getUserOldBookings(session: Session, uid: int) -> BookingInfo:
 
 # get seats details by booking
 def getSeatsByBooking(session: Session, booking_id: int) -> ShowSeatBookingInfo:
-    seats = session.query(ShowSeatBookingInfo).options(joinedload(ShowSeatBookingInfo.seatDeatils)) \
+    # seats = session.query(ShowSeatBookingInfo).options(joinedload(ShowSeatBookingInfo.seatDeatils)) \
+    #     .filter(ShowSeatBookingInfo.booking_id == booking_id).all()
+    seats = session.query(ShowSeatBookingInfo.seat_id, SeatsInfo).join(SeatsInfo, SeatsInfo.id == ShowSeatBookingInfo.seat_id) \
         .filter(ShowSeatBookingInfo.booking_id == booking_id).all()
+
     return seats
 
 

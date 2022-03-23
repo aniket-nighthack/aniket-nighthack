@@ -95,7 +95,7 @@ def seatAvailableOrNot(session: Session, seatid: int) -> SeatsInfo:
             return True
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail=f"This seat is already booked by another user.please try to book another seat")
+                                detail=f"This {seatid} seat id is already booked by another user.please try to book another seat")
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Invalid seat")

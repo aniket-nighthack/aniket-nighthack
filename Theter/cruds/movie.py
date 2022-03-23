@@ -98,7 +98,7 @@ def change_status(id: int, status: bool, db: Session) -> MovieInfo:
 
 def moviesByLocation(city: str, session: Session) -> MovieInfo:
     movies = session.query(MovieInfo).join(ThetersInfo) \
-        .filter(ThetersInfo.city == city,
+        .filter(ThetersInfo.city.contains(city),
                 MovieInfo.tid == ThetersInfo.id, MovieInfo.status == True).all()
 
     return Responses.success_result_with_data("location movie fond", "movies", movies)
@@ -110,9 +110,11 @@ def searchMovieTitle(title: str, session: Session):
 
 
 def allocateMovies(session: Session, allocated: AllocateMovies) -> AllocateMoviesInfo:
-    data = session.query(AllocateMoviesInfo).filter(AllocateMoviesInfo.mid == allocated.mid, AllocateMoviesInfo.tid == allocated.tid).first()
+    data = session.query(AllocateMoviesInfo).filter(AllocateMoviesInfo.mid == allocated.mid,
+                                                    AllocateMoviesInfo.tid == allocated.tid).first()
     if data:
-        return Responses.failed_result(f"This movie {allocated.mid} is already allocated to this theter {allocated.tid}")
+        return Responses.failed_result(
+            f"This movie {allocated.mid} is already allocated to this theter {allocated.tid}")
     else:
         movie = AllocateMoviesInfo(**allocated.dict())
         session.add(movie)
