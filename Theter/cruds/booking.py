@@ -47,9 +47,14 @@ def getUserOldBookings(session: Session, uid: int) -> BookingInfo:
 
 # get seats details by booking
 def getSeatsByBooking(session: Session, booking_id: int) -> ShowSeatBookingInfo:
-    seats = session.query(ShowSeatBookingInfo).options(joinedload(ShowSeatBookingInfo.seatDeatils)) \
-        .filter(ShowSeatBookingInfo.booking_id == booking_id).all()
-    return seats
+    # seats = session.query(ShowSeatBookingInfo).options(joinedload(ShowSeatBookingInfo.seatDeatils)) \
+    #     .filter(ShowSeatBookingInfo.booking_id == booking_id).all()
+    seats = session.query(ShowSeatBookingInfo.seat_id, SeatsInfo).join(SeatsInfo, SeatsInfo.id == ShowSeatBookingInfo.seat_id)\
+                          .filter(ShowSeatBookingInfo.booking_id == booking_id).all()
+    if seats:
+        return Responses.success_result_with_data("seats information available", "seatinfo", seats)
+    else:
+        return Responses.failed_result("Invalid booking_id!")
 
 
 # create/ add a new booking by end-user

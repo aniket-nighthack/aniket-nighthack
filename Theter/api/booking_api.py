@@ -28,7 +28,7 @@ def createBooking(booking: CreateBooking, session: Session = Depends(get_db),
 
 
 @router.get("/booking")
-def bookings(session: Session = Depends(get_db), current_user: User = Depends(oauth.get_current_user)):
+def bookings(session: Session = Depends(get_db), current_user: User = Depends(oauth.check_if_admin)):
     return getAllBookings(session)
 
 

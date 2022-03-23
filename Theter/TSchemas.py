@@ -99,7 +99,6 @@ class CreateBooking(BaseModel):
     showid: int
     noOfSeats: int
     seatid: List[int]
-    status: bool
 
 
 class Booking(CreateBooking):
@@ -107,6 +106,7 @@ class Booking(CreateBooking):
     uid: int
     create_at: datetime.datetime
     showdetails: List[Show]
+    status: bool
 
     class Config:
         orm_mode = True
