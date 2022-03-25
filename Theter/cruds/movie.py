@@ -136,10 +136,9 @@ def theaterMovies(session: Session, tid: int) -> AllocateMoviesInfo:
 
 def movieShows(session: Session, mid: int, uid: int) -> MovieInfo:
     user_location = getLastLocation(session, uid)
-    # theter = session.query(ThetersInfo, AllocateMoviesInfo).options(joinedload(AllocateMoviesInfo.movie))\
-    #                                  .join(AllocateMoviesInfo, AllocateMoviesInfo.tid == ThetersInfo.id)\
-    #                                  .filter(ThetersInfo.city == user_location.city).all()
-    theter = session.query(ThetersInfo, ShowsInfo)\
-         .join(ShowsInfo, ShowsInfo.tid == ThetersInfo.id)\
-        .filter(ThetersInfo.city == user_location.city).all()
+    theter = session.query(ThetersInfo).join(ShowsInfo).filter(ThetersInfo.city == user_location.city,ShowsInfo.tid == ThetersInfo.id).all()
+    for i in theter:
+        for j in i.shows:
+            pass
+            print(j)
     return theter

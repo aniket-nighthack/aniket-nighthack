@@ -28,7 +28,7 @@ class ThetersInfo(Base):
     verification = relationship("TheterVerificationInfo", uselist=True, back_populates="theter")
     screens = relationship("TheterScreenInfo", uselist=True, back_populates="theter")
     movies = relationship("MovieInfo", uselist=True, back_populates="theter")
-
+    shows = relationship("ShowsInfo", uselist=True, back_populates="theter")
 
 # theter documents model
 class TheterDocsInfo(Base):
