@@ -71,3 +71,16 @@ def search_movie_by_title(title: str, session: Session = Depends(get_db)):
 def allocate_movie_to_theter(allocate: CreateMovieAllocated, session: Session = Depends(get_db),
                              current_user: User = Depends(oauth.check_if_admin)):
     return allocateMovies(session, allocate)
+
+
+@router.get("/theater_movie/")
+def get_theater_movies(tid: int, session: Session = Depends(get_db),
+                       current_user: User = Depends(oauth.check_if_admin)):
+    return theaterMovies(session, tid)
+
+
+# get show details after selecting the movie
+@router.get("/movie/show")
+def get_shoes_by_movie(mid: int, session: Session = Depends(get_db),
+                       current_user: User = Depends(oauth.get_current_user)):
+    return movieShows(session, mid, current_user.id)

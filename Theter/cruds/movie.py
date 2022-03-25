@@ -6,9 +6,11 @@ from Theter.TModels import *
 from Theter.TSchemas import *
 from Common.Helper import *
 from Theter.TExceptions import *
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.sql.expression import func, case
 from sqlalchemy.sql.expression import false, true
+from User.crud import getUserById
+from User.Location.location_crud import getLastLocation
 
 
 # get all movies
@@ -38,7 +40,10 @@ def getOldMovies(session: Session) -> MovieInfo:
 # get movie by id
 def getMovieById(session: Session, id: int) -> MovieInfo:
     movies = session.query(MovieInfo).filter(MovieInfo.id == id).first()
-    return movies
+    if movies:
+        return movies
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Movie not found")
 
 
 # add new movies to the database
@@ -110,12 +115,31 @@ def searchMovieTitle(title: str, session: Session):
 
 
 def allocateMovies(session: Session, allocated: AllocateMovies) -> AllocateMoviesInfo:
-    data = session.query(AllocateMoviesInfo).filter(AllocateMoviesInfo.mid == allocated.mid, AllocateMoviesInfo.tid == allocated.tid).first()
+    data = session.query(AllocateMoviesInfo).filter(AllocateMoviesInfo.mid == allocated.mid,
+                                                    AllocateMoviesInfo.tid == allocated.tid).first()
     if data:
-        return Responses.failed_result(f"This movie {allocated.mid} is already allocated to this theter {allocated.tid}")
+        return Responses.failed_result(
+            f"This movie {allocated.mid} is already allocated to this theter {allocated.tid}")
     else:
         movie = AllocateMoviesInfo(**allocated.dict())
         session.add(movie)
         session.commit()
         session.refresh(movie)
         return Responses.success_result("Movies allocated successfully")
+
+
+def theaterMovies(session: Session, tid: int) -> AllocateMoviesInfo:
+    movie = session.query(AllocateMoviesInfo).options(joinedload(AllocateMoviesInfo.movie)).filter(
+        AllocateMoviesInfo.tid == tid).all()
+    return movie
+
+
+def movieShows(session: Session, mid: int, uid: int) -> MovieInfo:
+    user_location = getLastLocation(session, uid)
+    # theter = session.query(ThetersInfo, AllocateMoviesInfo).options(joinedload(AllocateMoviesInfo.movie))\
+    #                                  .join(AllocateMoviesInfo, AllocateMoviesInfo.tid == ThetersInfo.id)\
+    #                                  .filter(ThetersInfo.city == user_location.city).all()
+    theter = session.query(ThetersInfo, ShowsInfo)\
+         .join(ShowsInfo, ShowsInfo.tid == ThetersInfo.id)\
+        .filter(ThetersInfo.city == user_location.city).all()
+    return theter
