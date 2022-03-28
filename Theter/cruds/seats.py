@@ -6,7 +6,7 @@ from Theter.TModels import *
 from Theter.TSchemas import *
 from Common.Helper import *
 from Theter.TExceptions import *
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.sql.expression import func, case
 from sqlalchemy.sql.expression import false, true
 

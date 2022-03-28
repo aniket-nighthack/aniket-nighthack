@@ -6,9 +6,11 @@ from Theter.TModels import *
 from Theter.TSchemas import *
 from Common.Helper import *
 from Theter.TExceptions import *
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.sql.expression import func, case
 from sqlalchemy.sql.expression import false, true
+from User.crud import getUserById
+from User.Location.location_crud import getLastLocation
 
 
 # get all movies
@@ -38,7 +40,10 @@ def getOldMovies(session: Session) -> MovieInfo:
 # get movie by id
 def getMovieById(session: Session, id: int) -> MovieInfo:
     movies = session.query(MovieInfo).filter(MovieInfo.id == id).first()
-    return movies
+    if movies:
+        return movies
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Movie not found")
 
 
 # add new movies to the database
@@ -121,3 +126,19 @@ def allocateMovies(session: Session, allocated: AllocateMovies) -> AllocateMovie
         session.commit()
         session.refresh(movie)
         return Responses.success_result("Movies allocated successfully")
+
+
+def theaterMovies(session: Session, tid: int) -> AllocateMoviesInfo:
+    movie = session.query(AllocateMoviesInfo).options(joinedload(AllocateMoviesInfo.movie)).filter(
+        AllocateMoviesInfo.tid == tid).all()
+    return movie
+
+
+def movieShows(session: Session, mid: int, uid: int) -> MovieInfo:
+    user_location = getLastLocation(session, uid)
+    theter = session.query(ThetersInfo).join(ShowsInfo).filter(ThetersInfo.city == user_location.city,ShowsInfo.tid == ThetersInfo.id).all()
+    for i in theter:
+        for j in i.shows:
+            pass
+            print(j)
+    return theter
