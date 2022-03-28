@@ -3,6 +3,8 @@ from Connection.database import Base
 import datetime
 from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
+
+from Theter.TSchemas import Booking, Movie
 from User.model import UsersInfo
 
 
@@ -20,11 +22,13 @@ class ThetersInfo(Base):
     state = Column(String)
     city = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
+    user_id = Column(Integer, ForeignKey(UsersInfo.id))
 
     docs = relationship("TheterDocsInfo", uselist=True, back_populates="theter")
     verification = relationship("TheterVerificationInfo", uselist=True, back_populates="theter")
     screens = relationship("TheterScreenInfo", uselist=True, back_populates="theter")
-
+    movies = relationship("MovieInfo", uselist=True, back_populates="theter")
+    shows = relationship("ShowsInfo", uselist=True, back_populates="theter")
 
 # theter documents model
 class TheterDocsInfo(Base):
@@ -76,6 +80,7 @@ class SeatsInfo(Base):
     seat_price = Column(Integer)
     seat_status = Column(Boolean)
     screenid = Column(Integer, ForeignKey("screens.id"))
+
     screen = relationship(TheterScreenInfo, foreign_keys=[screenid])
 
 
@@ -87,10 +92,16 @@ class MovieInfo(Base):
     mov_name = Column(String)
     language = Column(String)
     mov_type = Column(String)
+    description = Column(String)
+    duration = Column(String)
     create_at = Column(DateTime, default=datetime.datetime.utcnow)
+    tid = Column(Integer, ForeignKey(ThetersInfo.id))
+    status = Column(Boolean)
+
+    theter = relationship(ThetersInfo, back_populates="movies")
 
 
-# current shows model   
+# current shows model
 class ShowsInfo(Base):
     __tablename__ = 'shows'
 
@@ -122,6 +133,7 @@ class BookingInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     showid = Column(Integer, ForeignKey(ShowsInfo.id))
     seatid = Column(Integer, ForeignKey(SeatsInfo.id))
+    noOfSeats = Column(Integer)
     booking_slot = Column(String)
     booking_date = Column(String)
     uid = Column(Integer, ForeignKey(UsersInfo.id))
@@ -129,3 +141,41 @@ class BookingInfo(Base):
     booking_status = Column(Boolean)
 
     showdetails = relationship(ShowsInfo, uselist=True, foreign_keys=[showid])
+
+
+# multiple seats booking for a shows
+class ShowSeatBookingInfo(Base):
+    __tablename__ = 'shows_seat_booking'
+
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer, ForeignKey(BookingInfo.id))
+    seat_id = Column(Integer, ForeignKey(SeatsInfo.id))
+    status = Column(Boolean)
+
+    seatDeatils = relationship(SeatsInfo, uselist=True, foreign_keys=[seat_id])
+    bookingDeatils = relationship(BookingInfo, uselist=True, foreign_keys=[booking_id])
+
+
+# payment module after bookings
+class PaymentInfo(Base):
+    __tablename__ = 'payment'
+
+    id = Column(Integer, primary_key=True, index=True)
+    amount = Column(Integer)
+    transaction_id = Column(Integer)
+    booking_id = Column(Integer, ForeignKey(BookingInfo.id))
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    booking = relationship(BookingInfo, foreign_keys=[booking_id])
+
+
+# movie allocate to multiple theter
+class AllocateMoviesInfo(Base):
+    __tablename__ = 'allocate_movies'
+
+    id = Column(Integer, primary_key=True, index=True)
+    mid = Column(Integer, ForeignKey(MovieInfo.id))
+    tid = Column(Integer, ForeignKey(ThetersInfo.id))
+    create_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    movie = relationship(MovieInfo, foreign_keys=[mid])

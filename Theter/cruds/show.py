@@ -48,7 +48,12 @@ def getTheterShows(session: Session, tid: int) -> TheterScreenInfo:
     else:
         return Responses.failed_result("Sorry current movie is not available")
 
-    # get a show by screen id
+# get a show's by logged theter user
+def currentTShows(session:Session, uid:int) -> ShowsInfo:
+    theter = session.query(ThetersInfo).filter(ThetersInfo.user_id == uid).first()
+
+    shows = session.query(ShowsInfo).options(joinedload(ShowsInfo.screens), joinedload(ShowsInfo.movie)).filter(ShowsInfo.tid == theter.id).all()
+    return shows
 
 
 def showByScreenId(session: Session, screenid: int) -> ShowsInfo:
@@ -107,3 +112,33 @@ def showSeats(session: Session, show_id: int) -> ShowsInfo:
         seats = seatsByScreenid(session, show.screenid)
         return seats
     return show
+
+# update show Information
+def updateShowInfo(session:Session, show:CreateShows, show_id:int) -> ShowsInfo:
+    shows = session.query(ShowsInfo).filter(ShowsInfo.id == show_id).first()
+    if shows:
+            shows.tid = show.tid
+            shows.screenid = show.screenid
+            shows.start_time = show.start_time
+            shows.end_time = show.end_time
+            shows.mid = show.mid
+            shows.show_type = show.show_type
+            shows.show_ticket = show.show_ticket
+            shows.show_date = show.show_date
+
+            session.add(shows)
+            session.commit()
+            session.refresh(shows)
+            return Responses.success_result("Show information update successfully")
+    else:
+        return Responses.failed_result("Failed to update show information")
+
+# delete the show
+def deleteShow(session:Session, show_id:int) -> ShowsInfo:
+    show = session.query(ShowsInfo).filter(ShowsInfo.id == show_id).first()
+    if show:
+        session.delete(show)
+        session.commit()
+        return Responses.success_result("Show deleted Successfully")
+    else:
+        return Responses.failed_result("Failed to delete show please try again")

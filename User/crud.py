@@ -31,6 +31,7 @@ def getUserById(session: Session, id: int) -> UsersInfo:
 # add a new user
 def create_user(session: Session, user: CreateUser):
     token = getAuthToken()
+
     new_user = UsersInfo(full_name=user.full_name, mobile=user.mobile, auth_token=token,
                          hash_password=Hash.bcrypt(user.password), user_type=user.user_type)
     session.add(new_user)
