@@ -7,6 +7,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.User import authenticatedUsers
 from app.User.Location import location_api
 from app.Theter.api import theters_api, screens_api, seats_api, movie_api, show_api, booking_api
+from fastapi_utils.tasks import repeat_every
+from app import run_scheduled_task
 
 app = FastAPI()
 
@@ -16,6 +18,13 @@ def index():
     return {
         'main': "main run default"
     }
+
+
+@app.on_event("startup")
+@repeat_every(seconds=60 * 60 * 24)  # 24 hour
+def scheduled_task():
+    run_scheduled_task.clear_old_movie()
+    pass
 
 
 # authentication router
