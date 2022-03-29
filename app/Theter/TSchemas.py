@@ -79,7 +79,7 @@ class CreateShows(BaseModel):
     mid: int
     show_type: bool
     show_ticket: int
-    show_date: str
+    show_date: datetime.date
 
 
 class Show(CreateShows):
