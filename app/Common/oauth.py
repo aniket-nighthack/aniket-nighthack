@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from Common import token
+from app.Common import token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -37,7 +37,6 @@ def check_if_merchant(data: str = Depends(oauth2_scheme)):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    print("checking admin")
 
     token_details = token.verify_token(data, credentials_exception)
 

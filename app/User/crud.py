@@ -4,9 +4,9 @@ from .exceptions import *
 from .schemas import *
 from sqlalchemy.orm import Session
 import secrets
-from Common.APIResponses import Responses
-from Common.Helper import *
-from Common.token import *
+from app.Common.APIResponses import Responses
+from app.Common.Helper import *
+from app.Common.token import *
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 

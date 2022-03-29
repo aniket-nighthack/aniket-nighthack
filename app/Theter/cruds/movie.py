@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session, joinedload
 import secrets
-from Common.APIResponses import Responses
+from app.Common.APIResponses import Responses
 from typing import List
-from Theter.TModels import *
-from Theter.TSchemas import *
-from Common.Helper import *
-from Theter.TExceptions import *
+from app.Theter.TModels import *
+from app.Theter.TSchemas import *
+from app.Common.Helper import *
+from app.Theter.TExceptions import *
 from fastapi import HTTPException, status
 from sqlalchemy.sql.expression import func, case
 from sqlalchemy.sql.expression import false, true
-from User.crud import getUserById
-from User.Location.location_crud import getLastLocation
+from app.User.crud import getUserById
+from app.User.Location.location_crud import getLastLocation
 
 
 # get all movies

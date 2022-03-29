@@ -1,11 +1,11 @@
 from sqlalchemy import Column, String, ForeignKey, Integer, DateTime, Time, Boolean
-from Connection.database import Base
+from app.Connection.database import Base
 import datetime
 from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
 
-from Theter.TSchemas import Booking, Movie
-from User.model import UsersInfo
+from app.Theter.TSchemas import Booking, Movie
+from app.User.model import UsersInfo
 
 
 # theters info

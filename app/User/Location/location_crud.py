@@ -1,18 +1,18 @@
 from typing import List
-from User.exceptions import *
-from User.schemas import *
+from app.User.exceptions import *
+from app.User.schemas import *
 from sqlalchemy.orm import Session
 import secrets
-from Common.APIResponses import Responses
-from Common.Helper import *
-from Common.token import *
+from app.Common.APIResponses import Responses
+from app.Common.Helper import *
+from app.Common.token import *
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from User.model import *
-from Theter.TModels import *
+from app.User.model import *
+from app.Theter.TModels import *
 
 from ..schemas import CreateLocation
-from Theter.cruds.Theters import *
+from app.Theter.cruds.Theters import *
 
 
 # get user last location

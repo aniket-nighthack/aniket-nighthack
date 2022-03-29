@@ -1,0 +1,9 @@
+jose==1.0.0
+passlib==1.7.4
+mysql-connector-python-rf==2.2.2
+fastapi-utils==0.2.1
+SQLAlchemy == 1.4.32
+python-jose == 3.3.0
+SQLAlchemy-Utils == 0.38.2
+multipart == 0.2.4
+python-multipart == 0.0.5

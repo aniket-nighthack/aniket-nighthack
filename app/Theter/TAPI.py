@@ -1,16 +1,16 @@
-from Theter.TCrud import *
-from Theter.TModels import *
-from Theter.TSchemas import *
+from app.Theter.TCrud import *
+from app.Theter.TModels import *
+from app.Theter.TSchemas import *
 from fastapi import APIRouter, Depends, HTTPException,  File, UploadFile
 from fastapi_utils.cbv import cbv
 from sqlalchemy.orm import Session
-from Connection.database import *
-from Common.APIResponses import Responses
+from app.Connection.database import *
+from app.Common.APIResponses import Responses
 from fastapi_utils import *
 import shutil
-from User.crud import *
-from User.userAuth import *
-from Common import oauth, token, Helper
+from app.User.crud import *
+from app.User.userAuth import *
+from app.Common import oauth, token, Helper
 router = APIRouter(prefix='/theter',
     tags=["Theter-User"])
 

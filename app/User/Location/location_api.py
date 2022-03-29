@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi_utils.cbv import cbv
 from sqlalchemy.orm import Session
-from User.crud import *
-from Connection.database import *
-from User.schemas import *
-from User.exceptions import *
+from app.User.crud import *
+from app.Connection.database import *
+from app.User.schemas import *
+from app.User.exceptions import *
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from User.userAuth import *
-from Common import oauth, token
-from User.Location.location_crud import *
+from app.User.userAuth import *
+from app.Common import oauth, token
+from app.User.Location.location_crud import *
 
 router = APIRouter(prefix='/user',
                    tags=["Location"])

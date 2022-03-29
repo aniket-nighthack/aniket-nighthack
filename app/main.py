@@ -1,13 +1,22 @@
-from fastapi import FastAPI, Header, Request 
+from fastapi import FastAPI, Header, Request
 from pydantic import BaseModel
-from User.api import *
-from Theter import TAPI
+from app.User.api import *
+from app.Theter import TAPI
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from User import authenticatedUsers
-from User.Location import location_api
-from Theter.api import theters_api, screens_api, seats_api, movie_api, show_api, booking_api
+from app.User import authenticatedUsers
+from app.User.Location import location_api
+from app.Theter.api import theters_api, screens_api, seats_api, movie_api, show_api, booking_api
+
 app = FastAPI()
+
+
+@app.get("/")
+def index():
+    return {
+        'main': "main run default"
+    }
+
 
 # authentication router
 app.include_router(authenticatedUsers.router)
@@ -38,4 +47,3 @@ app.include_router(movie_api.router)
 
 # shows router
 app.include_router(show_api.router)
-

@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session, joinedload
 import secrets
-from Common.APIResponses import Responses
+from app.Common.APIResponses import Responses
 from typing import List
-from Theter.TModels import *
-from Theter.TSchemas import *
-from Common.Helper import *
-from Theter.TExceptions import *
+from app.Theter.TModels import *
+from app.Theter.TSchemas import *
+from app.Common.Helper import *
+from app.Theter.TExceptions import *
 from fastapi import HTTPException
 from sqlalchemy.sql.expression import func, case
 from sqlalchemy.sql.expression import false, true
-from Theter.cruds.Theters import *
-from Theter.cruds.seats import *
+from app.Theter.cruds.Theters import *
+from app.Theter.cruds.seats import *
 
 
 # add/create new show

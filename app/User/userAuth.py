@@ -1,8 +1,8 @@
-from User.model import *
+from app.User.model import *
 from sqlalchemy.orm import Session
 from typing import Optional
 from fastapi import FastAPI, Header, Depends, Request, HTTPException, status
-from User.api import *
+from app.User.api import *
 
 class UserAuthentication():
 
