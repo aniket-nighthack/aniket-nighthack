@@ -7,9 +7,6 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.User import authenticatedUsers
 from app.User.Location import location_api
 from app.Theter.api import theters_api, screens_api, seats_api, movie_api, show_api, booking_api
-from fastapi_utils.tasks import repeat_every
-from app.Theter.api.show_api import changeShowStatus
-from app import run_scheduled_task
 
 app = FastAPI()
 
@@ -19,13 +16,6 @@ def index():
     return {
         'main': "main run default"
     }
-
-@router.on_event("startup")
-@repeat_every(seconds=40)  # 1 hour
-def remove_expired_tokens_task():
-    print("aniket")
-    return run_scheduled_task.clear_old_movie()
-
 
 
 # authentication router

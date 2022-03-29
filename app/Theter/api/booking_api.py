@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.Connection.database import *
 from app.Common.APIResponses import Responses
 from fastapi_utils import *
-from fastapi_utils.tasks import repeat_every
 import shutil
 from app.Theter.cruds.booking import *
 from app.User.schemas import *
@@ -64,6 +63,3 @@ def changeBooking(bookingid: int, session: Session = Depends(get_db),
 def cancelBooking(bookingid: int, session: Session = Depends(get_db),
                   current_user: User = Depends(oauth.get_current_user)):
     return CancelBooking(session, bookingid)
-
-
-
